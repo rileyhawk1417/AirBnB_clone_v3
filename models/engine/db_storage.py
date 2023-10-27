@@ -68,27 +68,37 @@ class DBStorage:
 
     def get(self, cls, id):
         """Get the specified object"""
+        """
+        NOTE: Old code
         if cls is not None:
             for key, value in self.__objects.items():
                 if cls == value.__class or value.__class.__name__ and id == key:
                     return value
-        return None
+        """
+        if cls and id:
+            t_class = cls, __name__ + "." + id
+            all_objs = self.all(cls)
+            for obj in all_objs:
+                if obj == t_class:
+                    return all_objs[obj]
+        else:
+            return None
 
     def count(self, cls=None):
         """Return the number of objects in a class
         If none return all objects count in storage
         """
-        if cls is None:
-            for cla in classes:
-                if cls is classes[cla] or cls is cla:
-                    return len(self.__session.query(classes[cla]).all())
-        """
-        TODO: Needs to find individual class
-        for key, value in self.__objects.items():
-            if cls == value.__class__:
-                return len(value.cities)
 
         """
+        NOTE: Previous code
+        for cla in classes:
+            if cls is None or cls is classes[cla] or cls is cla:
+                objs = self.__session.query(classes[cla]).all()
+                for obj in objs:
+                    print(obj)
+                return len(objs)
+        """
+        return len(self.all(cls))
 
     def delete(self, obj=None):
         """delete from the current database session obj if not None"""
