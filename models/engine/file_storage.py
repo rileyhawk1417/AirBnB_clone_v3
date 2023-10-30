@@ -57,14 +57,6 @@ class FileStorage:
 
     def get(self, cls, id):
         """Get the specified object"""
-        """"
-        NOTE: Old code
-        if cls is not None:
-            for key, value in self.__objects.items():
-                if cls == value.__class__ or value.__class__.__name__ and id == key:
-                    return value
-        return None
-        """
         if cls and id:
             t_class = "{}.{}".format(cls, id)
             all_objs = self.all(cls)

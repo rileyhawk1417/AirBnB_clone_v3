@@ -68,13 +68,6 @@ class DBStorage:
 
     def get(self, cls, id):
         """Get the specified object"""
-        """
-        NOTE: Old code
-        if cls is not None:
-            for key, value in self.__objects.items():
-                if cls == value.__class or value.__class.__name__ and id == key:
-                    return value
-        """
         if cls and id:
             t_class = cls, __name__ + "." + id
             all_objs = self.all(cls)
