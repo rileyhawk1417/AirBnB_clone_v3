@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-
+"""The main app file to launch API"""
 from flask import Flask
 from api.v1.views import app_views as blueprint_views
 
