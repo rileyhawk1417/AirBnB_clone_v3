@@ -18,7 +18,7 @@ def get_states():
         A list of dictionaries representing State Objects in JSON format.
     """
     states = []
-    for state in storage.all(State).values():
+    for state in storage.all("State").values():
         states.append(state.to_dict())
     return jsonify(states)
 
@@ -35,7 +35,7 @@ def get_state_by_id(state_id):
         Raise 404 error if no match for state_id is found.
     """
     if state_id:
-        for state in storage.all(State).values():
+        for state in storage.all("State").values():
             if state.id == state_id:
                 return jsonify(state.to_dict())
         abort(404)
@@ -52,7 +52,7 @@ def delete_state_by_id(state_id):
         An empty dictionary with the status code 200.
         Raise 404 error if no match for state_id is found.
     """
-    state_obj = storage.get(State, state_id)
+    state_obj = storage.get("State", state_id)
     if state_obj is None:
         abort(404)
     state_obj.delete()
@@ -99,7 +99,7 @@ def update_state(state_id):
     if request.json is None:
         return "Not a JSON", 400
     fields = request.get_json()
-    state_obj = storage.get(State, state_id)
+    state_obj = storage.get("State", state_id)
     if state_obj is None:
         abort(404)
     for key in fields:
