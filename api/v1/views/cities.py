@@ -89,7 +89,7 @@ def add_city(state_id):
     state_obj = storage.get(State, state_id)
     if state_obj is None:
         abort(404)
-    if not request.get_json():
+    if request.json is None:
         return "Not a JSON", 400
     fields = request.get_json()
     if fields.get("name") is None:
