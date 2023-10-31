@@ -5,9 +5,6 @@ from flask import jsonify, abort, request
 from models import storage
 from models.amenity import Amenity
 
-# Base path
-a_id_path = "/amenities/<string:amenity_id>"
-
 
 @app_views.route("/amenities", methods=["GET"], strict_slashes=False)
 def get_amenities():
@@ -18,12 +15,14 @@ def get_amenities():
         A list of dictionaries representing Amenity Objects in JSON format.
     """
     amenities = []
-    for amenity in storage.all(Amenity).values():
+    for amenity in storage.all("Amenity").values():
         amenities.append(amenity.to_dict())
     return jsonify(amenities)
 
 
-@app_views.route("{}".format(a_id_path), methods=["GET"], strict_slashes=False)
+@app_views.route(
+    "/amenities/<string:amenity_id>", methods=["GET"], strict_slashes=False
+)
 def get_amenity_by_id(amenity_id):
     """Retrieves a amenity object by amenity_id
 
@@ -35,16 +34,15 @@ def get_amenity_by_id(amenity_id):
         Raise 404 error if no match for amenity_id is found.
     """
     if amenity_id:
-        for amenity in storage.all(Amenity).values():
+        for amenity in storage.all("Amenity").values():
             if amenity.id == amenity_id:
                 return jsonify(amenity.to_dict())
         abort(404)
 
 
-del_ = "DELETE"
-
-
-@app_views.route("{}".format(a_id_path), methods=[del_], strict_slashes=False)
+@app_views.route(
+    "/amenities/<string:amenity_id>", methods=["DELETE"], strict_slashes=False
+)
 def delete_amenity_by_id(amenity_id):
     """Deletes a amenity object by amenity_id
 
@@ -55,7 +53,7 @@ def delete_amenity_by_id(amenity_id):
         An empty dictionary with the status code 200.
         Raise 404 error if no match for amenity_id is found.
     """
-    amenity_obj = storage.get(Amenity, amenity_id)
+    amenity_obj = storage.get("Amenity", amenity_id)
     if amenity_obj is None:
         abort(404)
     amenity_obj.delete()
@@ -84,7 +82,9 @@ def create_amenity():
     return jsonify(new_amenity.to_dict()), 201
 
 
-@app_views.route("{}".format(a_id_path), methods=["PUT"], strict_slashes=False)
+@app_views.route(
+    "/amenities/<string:amenity_id>", methods=["PUT"], strict_slashes=False
+)
 def update_amenity(amenity_id):
     """Updates a amenity object by amenity_id
 
@@ -103,7 +103,7 @@ def update_amenity(amenity_id):
     if request.json is None:
         return "Not a JSON", 400
     fields = request.get_json()
-    amenity_obj = storage.get(Amenity, amenity_id)
+    amenity_obj = storage.get("Amenity", amenity_id)
     if amenity_obj is None:
         abort(404)
     for key in fields:
