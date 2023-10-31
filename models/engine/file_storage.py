@@ -58,7 +58,7 @@ class FileStorage:
     def get(self, cls, id):
         """Get the specified object"""
         if cls and id:
-            t_class = "{}.{}".format(cls, id)
+            t_class = "{}.{}".format(cls.__name__, id)
             all_objs = self.all(cls)
             return all_objs.get(t_class)
         return None
@@ -67,11 +67,7 @@ class FileStorage:
         """Return the number of objects in a class
         If none return all objects count in storage
         """
-        if cls is None:
-            return len(self.__objects)
-        for key, value in self.__objects.items():
-            if cls == value.__class__:
-                return len(value.cities)
+        return len(self.all(cls))
 
     def reload(self):
         """deserializes the JSON file to __objects"""
