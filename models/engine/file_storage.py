@@ -61,7 +61,8 @@ class FileStorage:
             t_class = "{}.{}".format(cls.__name__, id)
             all_objs = self.all(cls)
             return all_objs.get(t_class)
-        return None
+        else:
+            return None
 
     def count(self, cls=None):
         """Return the number of objects in a class
