@@ -4,6 +4,7 @@ from api.v1.views import app_views
 from flask import jsonify, abort, request
 from models import storage
 from models.city import City
+from models.state import State
 
 
 @app_views.route(
@@ -19,7 +20,7 @@ def get_cities(state_id):
         List of dictionaries representing City objects in JSON format.
         Raise 404 error if `state_id` is not linked to any State object.
     """
-    state_obj = storage.get("State", state_id)
+    state_obj = storage.get(State, state_id)
     if state_obj is None:
         abort(404)
     cities = [city.to_dict() for city in state_obj.cities]
@@ -76,7 +77,7 @@ def add_city(state_id):
         with the status code 200.
         Raise 404 error if `state_id` is not linked to any State object.
     """
-    state_obj = storage.get("State", state_id)
+    state_obj = storage.get(State, state_id)
     if state_obj is None:
         abort(404)
     if request.json is None:
