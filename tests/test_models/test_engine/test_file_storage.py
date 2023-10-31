@@ -31,6 +31,7 @@ classes = {
 }
 errMsg = "Found code style errors (and warnings)."
 fsDocString = "FileStorage class needs a docstring"
+filePyDocString = "file_storage.py needs a docstring"
 
 
 class TestFileStorageDocs(unittest.TestCase):
@@ -60,12 +61,8 @@ test_file_storage.py"
 
     def test_file_storage_module_docstring(self):
         """Test for the file_storage.py module docstring"""
-        self.assertIsNot(
-            file_storage.__doc__, None, "file_storage.py needs a docstring"
-        )
-        self.assertTrue(
-            len(file_storage.__doc__) >= 1, "file_storage.py needs a docstring"
-        )
+        self.assertIsNot(file_storage.__doc__, None, filePyDocString)
+        self.assertTrue(len(file_storage.__doc__) >= 1, filePyDocString)
 
     def test_file_storage_class_docstring(self):
         """Test for the FileStorage class docstring"""
@@ -131,3 +128,21 @@ class TestFileStorage(unittest.TestCase):
         with open("file.json", "r") as f:
             js = f.read()
         self.assertEqual(json.loads(string), json.loads(js))
+
+    @unittest.skipIf(models.storage_t != "db", "not testing db storage")
+    def test_get(self):
+        """Test the get method"""
+        obj = State(name="California")
+        models.storage.new(obj)
+        models.storage.save()
+        fetched_obj = models.storage.get(State, obj.id)
+        self.assertIsNotNone(fetched_obj)
+        self.assertEqual(obj.id, fetched_obj.id)
+
+    @unittest.skipIf(models.storage_t != "db", "not testing db storage")
+    def test_count(self):
+        """Test the count method"""
+        first_count = models.storage.count(State)
+        models.storage.new(State(name="Arizona"))
+        models.storage.save()
+        self.assertEqual(models.storage.count(State), first_count + 1)
