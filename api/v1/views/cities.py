@@ -7,12 +7,13 @@ from models.city import City
 from models.state import State
 
 # Base urls
-c_url = "/states/<string:state_id>/cities"
+# cities url
+c_ = "/states/<string:state_id>/cities"
 # city id url
 idurl = "/cities/<string:city_id>"
 
 
-@app_views.route("{}".format(c_url), methods=["GET"], strict_slashes=False)
+@app_views.route("{}/cities".format(c_), methods=["GET"])
 def get_cities(state_id):
     """Retrieves the list of all City objects of a State.
 
@@ -36,7 +37,10 @@ def get_cities(state_id):
     return res
 
 
-@app_views.route("{}".format(cid_url), methods=["GET"], strict_slashes=False)
+@app_views.route(
+    "{}".format(idurl),
+    methods=["GET"],
+)
 def get_city(city_id):
     """Retrieves a City object based on `city_id`.
 
@@ -53,7 +57,7 @@ def get_city(city_id):
     return jsonify(city_obj.to_dict())
 
 
-@app_views.route("{}".format(idurl), methods=["DELETE"], strict_slashes=False)
+@app_views.route("{}".format(idurl), methods=["DELETE"])
 def delete_city(city_id):
     """Deletes a City object based on `city_id`.
 
@@ -72,7 +76,7 @@ def delete_city(city_id):
     return jsonify({})
 
 
-@app_views.route("{}".format(c_url), methods=["POST"], strict_slashes=False)
+@app_views.route("{}/cities".format(c_), methods=["POST"])
 def add_city(state_id):
     """Creates a City object using `state_id` and HTTP body request fields.
 
@@ -98,7 +102,7 @@ def add_city(state_id):
     return jsonify(new_city.to_dict()), 201
 
 
-@app_views.route("{}".format(idurl), methods=["PUT"], strict_slashes=False)
+@app_views.route("{}".format(idurl), methods=["PUT"])
 def edit_city(city_id):
     """Edit a City object using `city_id` and HTTP body request fields.
 

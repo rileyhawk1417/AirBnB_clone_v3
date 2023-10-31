@@ -9,6 +9,7 @@ import json
 
 app = Flask(__name__)
 app.register_blueprint(blueprint_views)
+app.url_map.strict_slashes = False
 cors = CORS(app, resources={r"/api/*": {"origins": "0.0.0.0"}})
 
 
