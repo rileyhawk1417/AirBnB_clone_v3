@@ -18,7 +18,7 @@ def teardown_context(exception):
     storage.close()
 
 
-@app.errorhandler(404)
+@app.errorhandler(Exception)
 def error_page_handler(e):
     """404 Page handler"""
     error = {"error": "Not found"}
@@ -39,8 +39,8 @@ if __name__ == "__main__":
     else:
         host = "0.0.0.0"
     if api_port in os.environ:
-        port = os.environ[api_port]
+        port = int(os.environ[api_port])
     else:
-        port = "5000"
+        port = int("5000")
 
     app.run(host=host, port=port, threaded=True)
