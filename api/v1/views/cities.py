@@ -7,13 +7,11 @@ from models.city import City
 from models.state import State
 
 # Base urls
-# cities url
-c_ = "/states/<string:state_id>/cities"
 # city id url
 idurl = "/cities/<string:city_id>"
 
 
-@app_views.route("{}/cities".format(c_), methods=["GET"])
+@app_views.route("/states/<string:state_id>/cities", methods=["GET"])
 def get_cities(state_id):
     """Retrieves the list of all City objects of a State.
 
@@ -76,7 +74,7 @@ def delete_city(city_id):
     return jsonify({})
 
 
-@app_views.route("{}/cities".format(c_), methods=["POST"])
+@app_views.route("/states/<string:state_id>/cities", methods=["POST"])
 def add_city(state_id):
     """Creates a City object using `state_id` and HTTP body request fields.
 
