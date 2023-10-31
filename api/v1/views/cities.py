@@ -21,13 +21,16 @@ def get_cities(state_id):
         Raise 404 error if `state_id` is not linked to any State object.
     """
     state_obj = storage.get(State, state_id)
+    cities_ = []
     if state_obj is None:
         abort(404)
-    if request.method == "GET":
-        cities = storage.all(City).values()
-        # sc: state_cities
-        sc = [obj.to_json() for obj in cities if obj.state_id == state_id]
-        return jsonify(sc)
+    cities = storage.all(City).values()
+    for sc in cities:
+        if sc.state_id == state_obj.id:
+            cities_.append(sc.to_dict())
+    # sc: state_cities
+    res = jsonify(cities_)
+    return res
     # cities = [city.to_dict() for city in state_obj.cities]
     # return jsonify(cities)
 
