@@ -1,10 +1,9 @@
 #!/usr/bin/python3
 """ Module containing User View """
-from api.v1.views import app_views
 from flask import jsonify, abort, request
+from api.v1.views import app_views
 from models import storage
 from models.user import User
-
 
 @app_views.route('/users', methods=['GET'], strict_slashes=False)
 def get_users():
@@ -16,9 +15,7 @@ def get_users():
     users = [user.to_dict() for user in storage.all("User").values()]
     return jsonify(users)
 
-
-@app_views.route('/users/<string:user_id>', methods=['GET'],
-                 strict_slashes=False)
+@app_views.route('/users/<string:user_id>', methods=['GET'], strict_slashes=False)
 def get_user(user_id):
     """ Retrieves a User object based on `user_id`.
 
@@ -26,7 +23,7 @@ def get_user(user_id):
         user_id (str): The UUID4 string representing a User object.
 
     Returns:
-        Dictionary represention of a User object in JSON format.
+        Dictionary representation of a User object in JSON format.
         404 error if `user_id` is not linked to any User object.
     """
     user_obj = storage.get("User", user_id)
@@ -34,9 +31,7 @@ def get_user(user_id):
         abort(404)
     return jsonify(user_obj.to_dict())
 
-
-@app_views.route('/users/<string:user_id>', methods=['DELETE'],
-                 strict_slashes=False)
+@app_views.route('/users/<string:user_id>', methods=['DELETE'], strict_slashes=False)
 def delete_user(user_id):
     """ Deletes a User object based on `user_id`.
 
@@ -54,32 +49,26 @@ def delete_user(user_id):
     storage.save()
     return jsonify({})
 
-
 @app_views.route('/users', methods=['POST'], strict_slashes=False)
 def add_user():
     """ Creates a User object using HTTP body request fields.
 
     Returns:
-        Returns the new User object as a  dictionary in JSON format
+        Returns the new User object as a dictionary in JSON format
         with the status code 201.
         400 error if HTTP body request is not a valid JSON or if the dictionary
         passed does not contain the key `email` and/or `password`.
     """
-    if request.json is None:
+    if not request.json:
         return "Not a JSON", 400
     fields = request.get_json()
-    if fields.get('email') is None:
-        return "Missing email", 400
-    if fields.get('password') is None:
-        return "Missing password", 400
+    if 'email' not in fields or 'password' not in fields:
+        return "Missing email or password", 400
     new_user = User(**fields)
     new_user.save()
-    """ May need to call `get` on new_user for all attributes to show """
     return jsonify(new_user.to_dict()), 201
 
-
-@app_views.route('/users/<string:user_id>', methods=['PUT'],
-                 strict_slashes=False)
+@app_views.route('/users/<string:user_id>', methods=['PUT'], strict_slashes=False)
 def edit_user(user_id):
     """ Edit a User object using `user_id` and HTTP body request fields.
 
@@ -95,7 +84,7 @@ def edit_user(user_id):
     user_obj = storage.get("User", user_id)
     if user_obj is None:
         abort(404)
-    if request.json is None:
+    if not request.json:
         return "Not a JSON", 400
     fields = request.get_json()
     for key in fields:
@@ -105,3 +94,6 @@ def edit_user(user_id):
             setattr(user_obj, key, fields[key])
     user_obj.save()
     return jsonify(user_obj.to_dict()), 200
+
+if __name__ == "__main__":
+    app_views.run(host="0.0.0.0", port=5000)
