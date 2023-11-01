@@ -86,7 +86,11 @@ def add_city(state_id):
         with the status code 200.
         Raise 404 error if `state_id` is not linked to any State object.
     """
-    state_obj = storage.get(State, state_id)
+    from models import storage as store
+    from models.city import City as c
+    from models.state import State as s
+
+    state_obj = store.get(s, state_id)
     if state_obj is None:
         abort(404)
     if not request.get_json:
@@ -95,7 +99,7 @@ def add_city(state_id):
     if "name" not in fields:
         abort(400, "Missing name")
     # fields["state_id"] = state_id
-    new_city = City(**fields)
+    new_city = c(**fields)
     new_city.state_id = state_id
     new_city.save()
     return jsonify(new_city.to_dict()), 201
