@@ -74,7 +74,7 @@ def delete_city(city_id):
     return jsonify({})
 
 
-@app_views.route("/states/<string:state_id>/cities", methods=["POST"])
+@app_views.route("/states/<state_id>/cities", methods=["POST"])
 def add_city(state_id):
     """Creates a City object using `state_id` and HTTP body request fields.
 
@@ -94,8 +94,9 @@ def add_city(state_id):
     fields = request.get_json()
     if "name" not in fields:
         abort(400, "Missing name")
-    fields["state_id"] = state_id
+    # fields["state_id"] = state_id
     new_city = City(**fields)
+    new_city.state_id = state_id
     new_city.save()
     return jsonify(new_city.to_dict()), 201
 
