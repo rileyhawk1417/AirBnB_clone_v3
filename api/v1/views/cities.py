@@ -90,12 +90,12 @@ def add_city(state_id):
     from models.city import City as c
     from models.state import State as s
 
-    req = request.get_json()
-    if req is None or not req:
+    if request.get_json() is None or not request.get_json():
         return "Not a JSON", 400
-    if "name" not in req:
+    if "name" not in request.get_json():
         return "Missing name", 400
 
+    req = request.get_json()
     state_obj = store.get(s, state_id)
     if state_obj is None:
         abort(404)
