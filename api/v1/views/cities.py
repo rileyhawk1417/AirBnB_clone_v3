@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """ Module containing City View """
 from api.v1.views import app_views
-from flask import jsonify, abort, request, make_response
+from flask import jsonify, abort, request
 from models import storage
 from models.city import City
 from models.state import State
@@ -87,18 +87,18 @@ def add_city(state_id):
         Raise 404 error if `state_id` is not linked to any State object.
     """
     state_obj = storage.get(State, state_id)
-    fields = request.get_json()
     if state_obj is None:
         abort(404)
-    if not fields:
-        abort(400, description="Not a JSON")
-    if fields.get("name") is None:
-        abort(400, description="Missing name")
+    if not request.get_json:
+        abort(400, "Not a JSON")
+    fields = request.get_json()
+    if "name" not in fields:
+        abort(400, "Missing name")
     # fields["state_id"] = state_id
     new_city = City(**fields)
     new_city.state_id = state_id
     new_city.save()
-    return make_response(jsonify(new_city.to_dict()), 201)
+    return jsonify(new_city.to_dict()), 201
 
 
 @app_views.route("{}".format(idurl), methods=["PUT"])
