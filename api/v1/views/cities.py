@@ -90,18 +90,18 @@ def add_city(state_id):
     from models.city import City as c
     from models.state import State as s
 
-    if request.get_json() is None or not request.get_json():
+    state_obj = store.get(s, state_id)
+    if state_obj is None:
+        abort(404)
+    if not request.get_json():
         return "Not a JSON", 400
     if "name" not in request.get_json():
         return "Missing name", 400
 
     req = request.get_json()
-    state_obj = store.get(s, state_id)
-    if state_obj is None:
-        abort(404)
     # fields["state_id"] = state_id
     new_city = c(**req)
-    new_city.state_id = state_id
+    new_city.state_id = state_obj.id
     new_city.save()
     return jsonify(new_city.to_dict()), 201
 
